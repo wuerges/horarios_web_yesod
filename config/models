@@ -34,7 +34,23 @@ ProfessorCourse
     professorId ProfessorId
     courseId CourseId
     UniqueProfessorCourse professorId courseId
+    deriving Eq
+    deriving Show
 
+Fase
+    number Int
+    turn Int
+    valid Bool
+    UniqueFase number turn
+
+Slot
+    professorCourseId ProfessorCourseId Maybe
+    dayOfTheWeek Int
+    timeSlot Int
+    faseId FaseId
+    UniqueSlot dayOfTheWeek timeSlot faseId
+    deriving Eq
+    deriving Show
 
 
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)

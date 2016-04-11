@@ -12,3 +12,5 @@
 
 /professor ProfessorR POST
 /course    CourseR POST
+
+/slot SlotR POST
