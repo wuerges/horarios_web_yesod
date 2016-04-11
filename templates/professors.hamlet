@@ -1,0 +1,14 @@
+$doctype 5
+<html>
+  <head>
+    <title> Listagem de Professores e Disciplinas
+
+  <body>
+    <h1> Professores:
+    <ul>
+      $forall Entity _ p <- professors
+         <li>P: #{professorName p}
+    <h1> Disciplinas:
+    <ul>
+      $forall Entity _ d <- courses
+         <li>P: #{courseCode d}
