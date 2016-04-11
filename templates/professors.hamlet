@@ -7,8 +7,17 @@ $doctype 5
     <h1> Professores:
     <ul>
       $forall Entity _ p <- professors
-         <li>P: #{professorName p}
+         <li>#{professorName p}
+
+      <li> 
+        <form method=post action=@{ProfessorR} enctype=#{p_enc}
+          >^{profW}
+          <button>Submit
     <h1> Disciplinas:
     <ul>
       $forall Entity _ d <- courses
-         <li>P: #{courseCode d}
+         <li> #{courseCode d}: #{fromMaybe "" $ courseName d} - Fase: #{courseFase d }
+      <li> 
+        <form method=post action=@{CourseR} enctype=#{c_enc}
+          >^{courseW}
+          <button>Submit

@@ -8,4 +8,7 @@
 
 /comments CommentR POST
 
-/professors ProfessorR GET
+/professors ListR GET
+
+/professor ProfessorR POST
+/course    CourseR POST

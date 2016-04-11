@@ -25,9 +25,10 @@ Professor
 Course
     name Text Maybe
     code Text
+    fase Int
     UniqueCourse code
     deriving Eq
-    deriving Ord
+    deriving Show
 
 ProfessorCourse
     professorId ProfessorId
