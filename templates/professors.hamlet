@@ -18,6 +18,13 @@ $doctype 5
       $forall Entity _ d <- courses
          <li> #{courseCode d}: #{fromMaybe "" $ courseName d} - Fase: #{courseFase d }
       <li> 
-        <form method=post action=@{CourseR} enctype=#{c_enc}
-          >^{courseW}
+        <form method=post action=@{CourseR} enctype=#{c_enc}>
+          ^{courseW}
           <button>Submit
+    <h1> Fases:
+    <ul>
+      $forall (w, e) <- f_ws
+        <form method=post action=@{FaseR} enctype=#{e}>
+          ^{w}
+          <button> Toggle
+
