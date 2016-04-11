@@ -41,8 +41,8 @@ Slot
     courseId CourseId Maybe
     dayOfTheWeek Int
     timeSlot Int
-    faseId FaseId
-    UniqueSlot dayOfTheWeek timeSlot faseId
+    fase Int
+    UniqueSlot fase dayOfTheWeek timeSlot
     deriving Eq
     deriving Show
 

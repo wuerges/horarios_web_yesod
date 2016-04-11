@@ -84,8 +84,8 @@ postDeleteCourseR cCode =
      redirect ListR
 
 
-postSlotR :: Handler Html
-postSlotR =
+postCleanSlotR :: Handler Html
+postCleanSlotR =
   do runDB $ deleteWhere ([] :: [Filter Slot])
      runDB $ deleteWhere ([] :: [Filter Fase])
      runDB $ mapM_ (\(n, t) -> insert_ $ Fase n t False) [(n, t) | n <- [1..10], t <- [1, 2]]
