@@ -14,4 +14,26 @@ Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived
     deriving Eq
     deriving Show
 
+-- These are custom entities
+
+Professor 
+    name Text
+    UniqueProfessor name
+    deriving Eq
+    deriving Show
+
+Course
+    name Text Maybe
+    code Text
+    UniqueCourse code
+    deriving Eq
+    deriving Ord
+
+ProfessorCourse
+    professorId ProfessorId
+    courseId CourseId
+    UniqueProfessorCourse professorId courseId
+
+
+
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)
