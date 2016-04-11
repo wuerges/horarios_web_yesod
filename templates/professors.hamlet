@@ -4,27 +4,29 @@ $doctype 5
     <title> Listagem de Professores e Disciplinas
 
   <body>
-    <h1> Professores:
-    <ul>
-      $forall Entity _ p <- professors
-         <li>#{professorName p}
+    <div id="professores"  style="float: left; width: 400px;">
+      <h1> Professores:
+      <ul>
+        $forall Entity _ p <- professors
+           <li>#{professorName p}
 
-      <li> 
-        <form method=post action=@{ProfessorR} enctype=#{p_enc}
-          >^{profW}
-          <button>Submit
-    <h1> Disciplinas:
-    <ul>
-      $forall Entity _ d <- courses
-         <li> #{courseCode d}: #{fromMaybe "" $ courseName d} - Fase: #{courseFase d }
-      <li> 
-        <form method=post action=@{CourseR} enctype=#{c_enc}>
-          ^{courseW}
-          <button>Submit
-    <h1> Fases:
-    <ul>
-      $forall (w, e) <- f_ws
-        <form method=post action=@{FaseR} enctype=#{e}>
-          ^{w}
-          <button> Toggle
+        <li> 
+          <form method=post action=@{ProfessorR} enctype=#{p_enc}>^{profW}
+            <button>Submit
+      <h1> Disciplinas:
+      <ul>
+        $forall Entity _ d <- courses
+           <li> #{courseCode d}: #{fromMaybe "" $ courseName d} - Fase: #{courseFase d }
+        <li> 
+          <form method=post action=@{CourseR} enctype=#{c_enc}>
+            ^{courseW}
+            <button>Submit
+    <div id="fases" style="float: left; width: 400px;">
+      <h1> Fases:
+      <ul>
+        $forall (f, w, e) <- f_ws
+          <li> Fase: #{faseNumber f},  Turno: #{faseTurn f}, Válida: #{faseValid f}
+          <form method=post action=@{FaseR} enctype=#{e}>
+            ^{w}
+            <button> Toggle
 

@@ -4,10 +4,13 @@ import Import
 
 faseAForm :: Maybe Fase -> AForm Handler Fase
 faseAForm mfase = Fase
-    <$> areq faseField "Fase" (faseNumber <$> mfase)
-    <*> areq turnField "Turno" (faseTurn <$> mfase)
-    <*> areq checkBoxField "Válido" (faseValid <$> mfase)
-  where turnField = radioFieldList [("Matutino" :: Text, 1), ("Noturno", 2)]
+    <$> areq hiddenField "" (faseNumber <$> mfase)
+    <*> areq hiddenField "" (faseTurn <$> mfase)
+    <*> areq hiddenField "" (faseValid <$> mfase)
+  --where turnField = radioFieldList [("Matutino" :: Text, 1), ("Noturno", 2)]
+
+--faseKeyAForm (Key kf = Key Fase
+    --Key <$> areq hiddenField "FaseKey" (
 
 professorAForm :: AForm Handler Professor
 professorAForm = Professor
@@ -26,31 +29,15 @@ faseField = checkBool checkN errorMessage intField
 
 --renderFormFase :: Entity Fase -> Handler Html
 generateFormFase (Entity _ f) = do
-  generateFormPost $ renderTable $ faseAForm $ Just f
-
- {-
-  widgetToPageContent $ [whamlet|
-     <form method=post action=@{FaseR} enctype=#{e}>
-       ^{w}
-       <button>Toggle
-  |]
-
-  -}
---          ^{faseW}
-      -- <button>Submit
---    <h1> Fases:
---    <ul>
---      $forall Entity _ f <- fases
---        <li> Fase: #{faseNumber f}, Turno #{faseTurn f}, Válida: #{faseValid f}
---        ^{renderFormFase f}
-
+  (w, e) <- generateFormPost $ renderTable $ faseAForm $ Just f
+  return (f, w, e)
 
 getListR :: Handler Html
 getListR = do
   professors     <- runDB $ selectList [] [Asc ProfessorName]
-  (profW, p_enc) <- generateFormPost $ renderTable $ professorAForm
+  (profW, p_enc) <- generateFormPost $ renderDivs $ professorAForm
   courses          <- runDB $ selectList [] [Asc CourseCode]
-  (courseW, c_enc) <- generateFormPost $ renderTable $ courseAForm
+  (courseW, c_enc) <- generateFormPost $ renderDivs $ courseAForm
   fases <- runDB $ selectList [] [Asc FaseNumber, Asc FaseTurn]
   f_ws  <- mapM generateFormFase fases
   defaultLayout $ do
@@ -90,7 +77,7 @@ postFaseR =
     ((res, _), _) <- runFormPost $ renderTable $ faseAForm Nothing
     case res of
       FormSuccess f -> (runDB $ do
-        Just (Entity k v) <- getBy $ UniqueFase (faseNumber f) (faseTurn f)
+        Just (Entity k _) <- getBy $ UniqueFase (faseNumber f) (faseTurn f)
         replace k (Fase (faseNumber f) (faseTurn f) (not $ faseValid f))
         )
       _ -> print $ ("Error" :: Text)
