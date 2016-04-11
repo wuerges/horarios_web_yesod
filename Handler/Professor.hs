@@ -29,32 +29,34 @@ faseField = checkBool checkN errorMessage intField
   where errorMessage = "Fase Inválida" :: Text
         checkN n = (n > 0) && (n <= 10)
 
---renderFormFase :: Entity Fase -> Handler Html
-
-generateFormEntity form (Entity _ f) = do
-  (w, e) <- generateFormPost $ renderDivs $ form $ Just f
-  return (f, w, e)
-
 getListR :: Handler Html
 getListR = do
   professors     <- runDB $ selectList [] [Asc ProfessorName]
   (profW, p_enc) <- generateFormPost $ renderDivs $ professorAForm $ Nothing
 
   courses          <- runDB $ selectList [] [Asc CourseCode]
+  courses_prof <- mapM getProf courses
+
   (courseW, c_enc) <- generateFormPost $ renderDivs $ courseAForm $ Nothing
 
   fases <- runDB $ selectList [] [Asc FaseNumber, Asc FaseTurn]
-  --f_ws  <- mapM (generateFormEntity faseAForm) fases
 
   defaultLayout $ do
     setTitle "Professors"
     $(widgetFile "professors" )
 
+ where
+   getProf (Entity k c) = do
+     mprof <- case courseProfessorId c of
+                    Just pId -> runDB $ get pId
+                    Nothing -> return Nothing
+     return (k, c, mprof)
+
+
 
 postNewProfessorR :: Handler Html
 postNewProfessorR =
   do
-    --professors  <- runDB $ selectList [] [Asc ProfessorName]
     ((res, _), _) <- runFormPost $ renderDivs $ professorAForm $ Nothing
     case res of
       FormSuccess prof -> runDB $ insert_ prof

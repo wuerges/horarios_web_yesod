@@ -17,8 +17,9 @@ $doctype 5
 
       <h1> Disciplinas:
       <ul>
-        $forall Entity _ c <- courses
-          <li> #{courseCode c}: #{fromMaybe "" $ courseName c} - Fase: #{courseFase c}
+        $forall (k, c, mp) <- courses_prof
+          <li> #{courseCode c}: #{fromMaybe "" $ courseName c} - Fase: #{courseFase c} 
+            - Professor: #{fromMaybe "" (professorName <$> mp)}
             <form method=post action=@{DeleteCourseR $ courseCode c}>
               <button>Remove
         <li> 
