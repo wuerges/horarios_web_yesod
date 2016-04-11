@@ -7,10 +7,9 @@ $doctype 5
     <div id="professores"  style="float: left; width: 500px;">
       <h1> Professores:
       <ul>
-        $forall (p, w, e) <- p_ws
+        $forall Entity _ p <- professors
           <li>#{professorName p} 
-            <form method=delete action=@{ProfessorR $ professorName p} enctype=#{e}>
-              <div style="display: none;">^{w}
+            <form method=post action=@{DeleteProfessorR $ professorName p}>
               <button>Remove
         <li> 
           <form method=post action=@{NewProfessorR} enctype=#{p_enc}>^{profW}
@@ -18,10 +17,9 @@ $doctype 5
 
       <h1> Disciplinas:
       <ul>
-        $forall (c, w, e) <- c_ws
+        $forall Entity _ c <- courses
           <li> #{courseCode c}: #{fromMaybe "" $ courseName c} - Fase: #{courseFase c}
-            <form method=delete action=@{CourseR $ courseCode c} enctype=#{e}>
-              <div style="display: none;"> ^{w}
+            <form method=post action=@{DeleteCourseR $ courseCode c}>
               <button>Remove
         <li> 
           <form method=post action=@{NewCourseR} enctype=#{c_enc}>
@@ -31,9 +29,8 @@ $doctype 5
     <div id="fases" style="float: left; width: 500px;">
       <h1> Fases:
       <ul>
-        $forall (f, w, e) <- f_ws
+        $forall Entity k f <- fases
           <li> Fase: #{faseNumber f},  Turno: #{faseTurn f}, Válida: #{faseValid f}
-            <form method=post action=@{FaseR} enctype=#{e}>
-              <div style="display: none;"> ^{w}
+            <form method=post action=@{FaseR k}>
               <button> Toggle
 

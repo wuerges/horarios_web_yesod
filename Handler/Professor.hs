@@ -38,15 +38,13 @@ generateFormEntity form (Entity _ f) = do
 getListR :: Handler Html
 getListR = do
   professors     <- runDB $ selectList [] [Asc ProfessorName]
-  p_ws <- mapM (generateFormEntity professorAForm) professors
   (profW, p_enc) <- generateFormPost $ renderDivs $ professorAForm $ Nothing
 
   courses          <- runDB $ selectList [] [Asc CourseCode]
-  c_ws <- mapM (generateFormEntity courseAForm) courses
   (courseW, c_enc) <- generateFormPost $ renderDivs $ courseAForm $ Nothing
 
   fases <- runDB $ selectList [] [Asc FaseNumber, Asc FaseTurn]
-  f_ws  <- mapM (generateFormEntity faseAForm) fases
+  --f_ws  <- mapM (generateFormEntity faseAForm) fases
 
   defaultLayout $ do
     setTitle "Professors"
@@ -63,8 +61,8 @@ postNewProfessorR =
       _                -> print $ ("Error" :: Text)
     redirect ListR
 
-deleteProfessorR :: Text -> Handler Html
-deleteProfessorR pName =
+postDeleteProfessorR :: Text -> Handler Html
+postDeleteProfessorR pName =
   do runDB $ deleteBy $ UniqueProfessor pName
      redirect ListR
 
@@ -78,8 +76,8 @@ postNewCourseR =
       _                  -> print $ ("Error" :: Text)
     redirect ListR
 
-deleteCourseR :: Text -> Handler Html
-deleteCourseR cCode =
+postDeleteCourseR :: Text -> Handler Html
+postDeleteCourseR cCode =
   do runDB $ deleteBy $ UniqueCourse cCode
      redirect ListR
 
@@ -91,15 +89,11 @@ postSlotR =
      runDB $ mapM_ (\(n, t) -> insert_ $ Fase n t False) [(n, t) | n <- [1..10], t <- [1, 2]]
      return "Deleting all slots\n"
 
-postFaseR :: Handler Html
-postFaseR =
-  do
-    ((res, _), _) <- runFormPost $ renderTable $ faseAForm Nothing
-    case res of
-      FormSuccess f -> (runDB $ do
-        Just (Entity k _) <- getBy $ UniqueFase (faseNumber f) (faseTurn f)
-        replace k (Fase (faseNumber f) (faseTurn f) (not $ faseValid f))
-        )
-      _ -> print $ ("Error" :: Text)
-    redirect ListR
+postFaseR :: Key Fase -> Handler Html
+postFaseR k =
+  do mfase  <- runDB $ get k
+     case mfase of
+       Just f -> runDB $ replace k $ f { faseValid = not $ faseValid f }
+       Nothing -> print $ ("Error" :: Text)
+     redirect ListR
 

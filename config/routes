@@ -10,12 +10,12 @@
 
 /professors ListR GET
 
-/professor/#Text ProfessorR DELETE
-/professor/        NewProfessorR POST
+/professor/#Text DeleteProfessorR POST
+/professor/      NewProfessorR POST
 
-/course/#Text    CourseR DELETE
-/course/    NewCourseR POST 
+/course/#Text    DeleteCourseR POST
+/course/         NewCourseR POST 
 
 /slot SlotR POST
 
-/fase FaseR POST
+/fase/#FaseId FaseR POST
