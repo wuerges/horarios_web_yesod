@@ -12,15 +12,17 @@ faseAForm mfase = Fase
 --faseKeyAForm (Key kf = Key Fase
     --Key <$> areq hiddenField "FaseKey" (
 
-professorAForm :: AForm Handler Professor
-professorAForm = Professor
-    <$> areq textField "Nome" Nothing
+professorAForm :: Maybe Professor -> AForm Handler Professor
+professorAForm mprofessor = Professor
+    <$> areq textField "Nome" (professorName <$> mprofessor)
 
-courseAForm :: AForm Handler Course
-courseAForm = Course
-    <$> aopt textField "Nome" Nothing
-    <*> areq textField "Codigo" Nothing
-    <*> areq faseField "Fase" Nothing
+courseAForm :: Maybe Course -> AForm Handler Course
+courseAForm mcourse = Course
+    <$> aopt textField "Nome" (courseName <$> mcourse)
+    <*> areq textField "Codigo" (courseCode <$> mcourse)
+    <*> areq faseField "Fase" (courseFase <$> mcourse)
+    <*> aopt (selectField professors) "Professor" (courseProfessorId <$> mcourse)
+      where professors =  optionsPersistKey [] [Asc ProfessorName] professorName
 
 
 faseField = checkBool checkN errorMessage intField
@@ -28,18 +30,24 @@ faseField = checkBool checkN errorMessage intField
         checkN n = (n > 0) && (n <= 10)
 
 --renderFormFase :: Entity Fase -> Handler Html
-generateFormFase (Entity _ f) = do
-  (w, e) <- generateFormPost $ renderTable $ faseAForm $ Just f
+
+generateFormEntity form (Entity _ f) = do
+  (w, e) <- generateFormPost $ renderDivs $ form $ Just f
   return (f, w, e)
 
 getListR :: Handler Html
 getListR = do
   professors     <- runDB $ selectList [] [Asc ProfessorName]
-  (profW, p_enc) <- generateFormPost $ renderDivs $ professorAForm
+  p_ws <- mapM (generateFormEntity professorAForm) professors
+  (profW, p_enc) <- generateFormPost $ renderDivs $ professorAForm $ Nothing
+
   courses          <- runDB $ selectList [] [Asc CourseCode]
-  (courseW, c_enc) <- generateFormPost $ renderDivs $ courseAForm
+  c_ws <- mapM (generateFormEntity courseAForm) courses
+  (courseW, c_enc) <- generateFormPost $ renderDivs $ courseAForm $ Nothing
+
   fases <- runDB $ selectList [] [Asc FaseNumber, Asc FaseTurn]
-  f_ws  <- mapM generateFormFase fases
+  f_ws  <- mapM (generateFormEntity faseAForm) fases
+
   defaultLayout $ do
     setTitle "Professors"
     $(widgetFile "professors" )
@@ -49,7 +57,7 @@ postProfessorR :: Handler Html
 postProfessorR =
   do
     --professors  <- runDB $ selectList [] [Asc ProfessorName]
-    ((res, _), _) <- runFormPost $ renderTable $ professorAForm
+    ((res, _), _) <- runFormPost $ renderDivs $ professorAForm $ Nothing
     case res of
       FormSuccess prof -> runDB $ insert_ prof
       _                -> print $ ("Error" :: Text)
@@ -58,7 +66,7 @@ postProfessorR =
 postCourseR :: Handler Html
 postCourseR =
   do
-    ((res, _), _) <- runFormPost $ renderTable $ courseAForm
+    ((res, _), _) <- runFormPost $ renderDivs $ courseAForm $ Nothing
     case res of
       FormSuccess course -> runDB $ insert_ course
       _                  -> print $ ("Error" :: Text)

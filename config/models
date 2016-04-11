@@ -26,14 +26,8 @@ Course
     name Text Maybe
     code Text
     fase Int
+    professorId ProfessorId Maybe
     UniqueCourse code
-    deriving Eq
-    deriving Show
-
-ProfessorCourse
-    professorId ProfessorId
-    courseId CourseId
-    UniqueProfessorCourse professorId courseId
     deriving Eq
     deriving Show
 
@@ -44,7 +38,7 @@ Fase
     UniqueFase number turn
 
 Slot
-    professorCourseId ProfessorCourseId Maybe
+    courseId CourseId Maybe
     dayOfTheWeek Int
     timeSlot Int
     faseId FaseId

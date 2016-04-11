@@ -4,29 +4,36 @@ $doctype 5
     <title> Listagem de Professores e Disciplinas
 
   <body>
-    <div id="professores"  style="float: left; width: 400px;">
+    <div id="professores"  style="float: left; width: 500px;">
       <h1> Professores:
       <ul>
-        $forall Entity _ p <- professors
-           <li>#{professorName p}
-
+        $forall (p, w, e) <- p_ws
+          <li>#{professorName p} 
+            <form method=delete action=@{ProfessorR} enctype=#{e}>
+              <div style="display: none;">^{w}
+              <button>Remove
         <li> 
           <form method=post action=@{ProfessorR} enctype=#{p_enc}>^{profW}
             <button>Submit
+
       <h1> Disciplinas:
       <ul>
-        $forall Entity _ d <- courses
-           <li> #{courseCode d}: #{fromMaybe "" $ courseName d} - Fase: #{courseFase d }
+        $forall (c, w, e) <- c_ws
+          <li> #{courseCode c}: #{fromMaybe "" $ courseName c} - Fase: #{courseFase c}
+            <form method=delete action=@{CourseR} enctype=#{e}>
+              <div style="display: none;"> ^{w}
+              <button>Remove
         <li> 
           <form method=post action=@{CourseR} enctype=#{c_enc}>
             ^{courseW}
             <button>Submit
-    <div id="fases" style="float: left; width: 400px;">
+
+    <div id="fases" style="float: left; width: 500px;">
       <h1> Fases:
       <ul>
         $forall (f, w, e) <- f_ws
           <li> Fase: #{faseNumber f},  Turno: #{faseTurn f}, Válida: #{faseValid f}
-          <form method=post action=@{FaseR} enctype=#{e}>
-            ^{w}
-            <button> Toggle
+            <form method=post action=@{FaseR} enctype=#{e}>
+              <div style="display: none;"> ^{w}
+              <button> Toggle
 
