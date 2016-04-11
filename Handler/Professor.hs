@@ -53,8 +53,8 @@ getListR = do
     $(widgetFile "professors" )
 
 
-postProfessorR :: Handler Html
-postProfessorR =
+postNewProfessorR :: Handler Html
+postNewProfessorR =
   do
     --professors  <- runDB $ selectList [] [Asc ProfessorName]
     ((res, _), _) <- runFormPost $ renderDivs $ professorAForm $ Nothing
@@ -63,14 +63,26 @@ postProfessorR =
       _                -> print $ ("Error" :: Text)
     redirect ListR
 
-postCourseR :: Handler Html
-postCourseR =
+deleteProfessorR :: Text -> Handler Html
+deleteProfessorR pName =
+  do runDB $ deleteBy $ UniqueProfessor pName
+     redirect ListR
+
+
+postNewCourseR :: Handler Html
+postNewCourseR =
   do
     ((res, _), _) <- runFormPost $ renderDivs $ courseAForm $ Nothing
     case res of
       FormSuccess course -> runDB $ insert_ course
       _                  -> print $ ("Error" :: Text)
     redirect ListR
+
+deleteCourseR :: Text -> Handler Html
+deleteCourseR cCode =
+  do runDB $ deleteBy $ UniqueCourse cCode
+     redirect ListR
+
 
 postSlotR :: Handler Html
 postSlotR =

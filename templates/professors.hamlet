@@ -9,22 +9,22 @@ $doctype 5
       <ul>
         $forall (p, w, e) <- p_ws
           <li>#{professorName p} 
-            <form method=delete action=@{ProfessorR} enctype=#{e}>
+            <form method=delete action=@{ProfessorR $ professorName p} enctype=#{e}>
               <div style="display: none;">^{w}
               <button>Remove
         <li> 
-          <form method=post action=@{ProfessorR} enctype=#{p_enc}>^{profW}
+          <form method=post action=@{NewProfessorR} enctype=#{p_enc}>^{profW}
             <button>Submit
 
       <h1> Disciplinas:
       <ul>
         $forall (c, w, e) <- c_ws
           <li> #{courseCode c}: #{fromMaybe "" $ courseName c} - Fase: #{courseFase c}
-            <form method=delete action=@{CourseR} enctype=#{e}>
+            <form method=delete action=@{CourseR $ courseCode c} enctype=#{e}>
               <div style="display: none;"> ^{w}
               <button>Remove
         <li> 
-          <form method=post action=@{CourseR} enctype=#{c_enc}>
+          <form method=post action=@{NewCourseR} enctype=#{c_enc}>
             ^{courseW}
             <button>Submit
 

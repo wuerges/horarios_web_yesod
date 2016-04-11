@@ -10,8 +10,11 @@
 
 /professors ListR GET
 
-/professor ProfessorR POST
-/course    CourseR POST
+/professor/#Text ProfessorR DELETE
+/professor/        NewProfessorR POST
+
+/course/#Text    CourseR DELETE
+/course/    NewCourseR POST 
 
 /slot SlotR POST
 
