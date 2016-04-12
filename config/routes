@@ -21,5 +21,5 @@
 
 /horarios HorariosR GET
 
-/slot/#Int/#Int/#Int SlotR POST
+/slot/#Int/#Int/#Int  SlotR POST
 /slots CleanSlotR POST

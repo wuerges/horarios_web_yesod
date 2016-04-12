@@ -3,12 +3,12 @@ module Handler.Horarios where
 import Import
 --import Data.Map ((!))
 
-slotAForm :: Slot -> AForm Handler Slot
-slotAForm (Slot cId day hour fase) = Slot
-  <$> aopt (selectField courses) "" (Just cId)
-  <*> areq hiddenField "" (Just day)
-  <*> areq hiddenField "" (Just hour)
-  <*> areq hiddenField "" (Just fase)
+slotAForm0 :: AForm Handler Slot
+slotAForm0  = Slot
+  <$> aopt hiddenField "" Nothing
+  <*> areq hiddenField "" Nothing
+  <*> areq hiddenField "" Nothing
+  <*> areq hiddenField "" Nothing
 
 slotAForm :: Slot -> AForm Handler Slot
 slotAForm (Slot cId day hour fase) = Slot
@@ -16,8 +16,9 @@ slotAForm (Slot cId day hour fase) = Slot
   <*> areq hiddenField "" (Just day)
   <*> areq hiddenField "" (Just hour)
   <*> areq hiddenField "" (Just fase)
-
- where courses = optionsPersistKey [CourseFase ==. fase] [Asc CourseCode] courseCode
+ where
+   courses =
+     optionsPersistKey ([CourseFase ==. fase] ||. [CourseFase ==. 0]) [Asc CourseCode] courseCode
 
 makeSlotForm :: Int -> Int -> Int -> Widget
 makeSlotForm fn d h = do
@@ -44,12 +45,18 @@ getHorariosR = do
     setTitle "Horários"
     $(widgetFile "horarios")
 
-postSlotR :: Handler Html
-postSlotR = do
-
-  mslot <- runDB $ getBy $ UniqueSlot f day hor
-  case mslot of
-    Just (Entity k v) -> runDB $ replace k (Slot Nothing day hor f)
-    Nothing -> runDB $ insert_ $ Slot Nothing day hor f
+postSlotR :: Int -> Int -> Int -> Handler Html
+postSlotR pf pd ph = do
+  ((res, _), _) <- runFormPost $ renderDivs $ slotAForm0
+  mslot <- runDB $ getBy $ UniqueSlot pf pd ph
+  case res of
+    FormSuccess s ->
+      case mslot of
+        Just (Entity k _) -> runDB $ replace k s
+        Nothing -> runDB $ insert_ s
+    _ ->
+      case mslot of
+        Just (Entity k _) -> runDB $ delete k
+        Nothing -> return ()
   redirect HorariosR
 
