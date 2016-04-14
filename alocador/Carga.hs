@@ -10,7 +10,7 @@ import Import
 data Disc = Disc { _prof :: String, _nome :: String }
     deriving (Ord, Eq, Show)
 
-data Hor = Hor { _dia :: Int, _hora :: Integer }
+data Hor = Hor { _dia :: Int, _hora :: Int }
     deriving (Ord, Eq, Show)
 
 data Turno = Diurno | Noturno
