@@ -13,8 +13,8 @@
 /professor/#Text DeleteProfessorR POST
 /professor/      NewProfessorR POST
 
-/course/#Text    DeleteCourseR POST
-/course/         NewCourseR POST 
+/course/#Text/#Int    DeleteCourseR POST
+/course/              NewCourseR POST 
 
 
 /fase/#FaseId FaseR POST

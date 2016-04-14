@@ -20,7 +20,7 @@ $doctype 5
         $forall (k, c, mp) <- courses_prof
           <li> #{courseCode c}: #{fromMaybe "" $ courseName c} - Fase: #{courseFase c} 
             - Professor: #{fromMaybe "" (professorName <$> mp)}
-            <form method=post action=@{DeleteCourseR $ courseCode c}>
+            <form method=post action=@{DeleteCourseR (courseCode c) (courseFase c) }>
               <button>Remove
         <li> 
           <form method=post action=@{NewCourseR} enctype=#{c_enc}>

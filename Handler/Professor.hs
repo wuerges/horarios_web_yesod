@@ -78,9 +78,9 @@ postNewCourseR =
       _                  -> print $ ("Error" :: Text)
     redirect ListR
 
-postDeleteCourseR :: Text -> Handler Html
-postDeleteCourseR cCode =
-  do runDB $ deleteBy $ UniqueCourse cCode
+postDeleteCourseR :: Text -> Int -> Handler Html
+postDeleteCourseR cCode nf =
+  do runDB $ deleteBy $ UniqueCourse cCode nf
      redirect ListR
 
 

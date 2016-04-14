@@ -6,11 +6,15 @@ import qualified Algo as A
 import qualified Data.Map as M
 
 
-mkMapQuadro :: Either ([C.Disc], C.Quadro) C.Quadro -> M.Map (Int, Int, Int) Text
-mkMapQuadro (Left _ ) = M.empty
-mkMapQuadro (Right (C.Quadro q)) = M.fromList ql
+mkMapQuadro' (C.Quadro q) = M.fromList ql
   where ql = [((h, d, fn), dname) |
                (C.Hor d h, fn, C.Disc pname dname) <- q]
+
+
+mkMapQuadro :: Either ([C.Disc], C.Quadro) C.Quadro -> ([C.Disc], M.Map (Int, Int, Int) Text)
+mkMapQuadro (Left (sobras, q)) = (sobras, mkMapQuadro' q)
+mkMapQuadro (Right q)          = ([], mkMapQuadro' q)
+
 
 renderResult :: M.Map (Int, Int, Int) Text -> (Int, Int, Int) -> Text
 renderResult m k = case M.lookup k m of
@@ -31,21 +35,25 @@ getCargaR = do
             Entity kc c <- courses,
             Just kp == courseProfessorId c
           ]
-      _pres = [(fn, C.Hor d h, C.Disc pname dname) |
+      _pres_1 = [(fn, C.Hor d h, C.Disc "<Sem Nome>" dname) |
+            Entity ks (Slot cId d h fn) <- precolors,
+            Entity kc (Course _ dname c_fn _) <- courses,
+            Just kc == cId]
+      _pres_2 = [(fn, C.Hor d h, C.Disc pname dname) |
             Entity ks (Slot cId d h fn) <- precolors,
             (Professor pname, kc, Course _ dname c_fn _) <- ps_cs,
             Just kc == cId]
+
+      _pres = _pres_1 ++ _pres_2
 
       _fs = [(n, C.numberTurno t) | Entity _ (Fase n t _) <- fases]
       _ps = [(C.Disc pname dname, fn) |
               (Professor pname, _, Course _ dname fn _) <- ps_cs]
       _c = C.CargaJ _fs (_ps ++ _ps) _pres
       _s = A.solve (C.toCarga _c)
-      _m = mkMapQuadro _s
-  print ps_cs
-  print fases
-  print precolors
-  print _s
+      -- TODO FAZER ALGO COM AS SOBRAS
+      (_sobras, _m) = mkMapQuadro _s
+  print $ "PRECOLORS: " ++ show _pres
   defaultLayout $ do
     setTitle "Carga"
     $(widgetFile "carga")
@@ -90,7 +98,7 @@ days :: [Int]
 days = [1, 2, 3, 4, 5]
 
 diurnos :: [Int]
-diurnos = [7, 9]
+diurnos = [7, 10]
 
 noturnos :: [Int]
 noturnos = [19, 21]

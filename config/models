@@ -27,7 +27,7 @@ Course
     code Text
     fase Int
     professorId ProfessorId Maybe
-    UniqueCourse code
+    UniqueCourse code fase
     deriving Eq
     deriving Show
 

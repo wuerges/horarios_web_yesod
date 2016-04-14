@@ -4,7 +4,7 @@ $doctype 5
     <title> Carga Horária
 
   <body>
-    <h1> Carga horária gerada pela interface
+    <h1> Carga horária gerada automaticamente
     <div style="float: left; width: 600px;">
       $forall Entity k f <- diurno
         <h2> Fase #{faseNumber f} - Diurno
@@ -42,3 +42,9 @@ $doctype 5
               $forall d <- days
                 <td> 
                   #{renderResult _m (h, d, faseNumber f)}
+
+    <div>
+        <h2> Horários não alocados
+        <ul>
+        $forall d <- _sobras
+          <li> #{show d}
