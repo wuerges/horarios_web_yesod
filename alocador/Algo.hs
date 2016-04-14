@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Algo where
 
 import Data.Graph.Inductive
@@ -6,6 +8,7 @@ import Control.Lens
 import qualified Data.Map as H
 import qualified Data.Set as S
 import qualified Data.List as L
+import qualified Data.Text as T
 
 import Import
 
@@ -22,12 +25,10 @@ type G = Gr (Int, Hor) ()
 type PM = H.Map Int Disc
 type TODO = [(Disc, [Int])]
 
-breakP :: [Char] -> [[Char]]
-breakP p = case break (=='&') p of
-    (p1, "") -> [p1]
-    (p1, _:ps) -> p1:(breakP ps)
+breakP :: Text -> [Text]
+breakP = T.splitOn "&"
 
-profProib :: String -> String -> Bool
+profProib :: Text -> Text -> Bool
 profProib p1s p2s = any (\(a, b) -> a == b) [(p1, p2) | p1 <- breakP p1s, p2 <- breakP p2s]
 
 neighs :: PM -> G -> Int -> [(Disc, Hor)]

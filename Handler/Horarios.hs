@@ -1,11 +1,50 @@
 module Handler.Horarios where
 
 import Import
---import Data.Map ((!))
+import qualified Carga as C
+import qualified Algo as A
+
+--import Database.Persist.Sql
+
+--data CargaJ = CargaJ { __fases :: [(Int, Turno)]
+--                    , __profs :: [(Disc, Int)]
+--                    , __precolors :: [Precolor] }
+--
+-- toCarga
+-- solve
 
 
---hiddenFieldSettings :: FieldSettings String
-                       --fromString "Some MSG"  { fsAttrs = [("class", "hfield")] }
+
+
+getCargaR :: Handler Html
+getCargaR = do
+  fases <- runDB $ selectList [FaseValid ==. True] []
+  professors <- runDB $ selectList [] [Asc ProfessorName]
+  courses <- runDB $ selectList [] [Asc CourseCode]
+  precolors <- runDB $ selectList [SlotCourseId !=. Nothing] []
+  let ps_cs = [(p, kc, c) |
+            Entity kp p <- professors,
+            Entity kc c <- courses,
+            Just kp == courseProfessorId c
+          ]
+      _pres = [(fn, C.Hor d h, C.Disc pname dname) |
+            Entity ks (Slot cId d h fn) <- precolors,
+            (Professor pname, kc, Course _ dname c_fn _) <- ps_cs,
+            Just kc == cId]
+
+      _fs = [(n, C.numberTurno t) | Entity _ (Fase n t _) <- fases]
+      _ps = [(C.Disc pname dname, fn) |
+              (Professor pname, _, Course _ dname fn _) <- ps_cs]
+      _c = C.CargaJ _fs (_ps ++ _ps) _pres
+      _s = A.solve (C.toCarga _c)
+  print ps_cs
+  print fases
+  print precolors
+  print _s
+  defaultLayout $ do
+    setTitle "Carga"
+    $(widgetFile "carga")
+
 
 
 slotAForm0 :: AForm Handler Slot
@@ -42,16 +81,20 @@ makeSlotForm fn d h = do
   (w, _) <- handlerToWidget $ generateFormPost $ renderDivsNoLabels $ slotAForm $ slot
   w
 
+days :: [Int]
+days = [1, 2, 3, 4, 5]
 
+diurnos :: [Int]
+diurnos = [7, 9]
+
+noturnos :: [Int]
+noturnos = [19, 21]
 
 getHorariosR :: Handler Html
 getHorariosR = do
   diurno <- runDB $ selectList [FaseTurn ==. 1, FaseValid ==. True] [Asc FaseNumber]
   noturno <- runDB $ selectList [FaseTurn ==. 2, FaseValid ==. True] [Asc FaseNumber]
 
-  let days = [1, 2, 3, 4, 5] :: [Int]
-      diurnos = [7, 9] :: [Int]
-      noturnos = [19, 21] :: [Int]
 
   defaultLayout $ do
     setTitle "Horários"

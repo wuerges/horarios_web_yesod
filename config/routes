@@ -23,3 +23,6 @@
 
 /slot/#Int/#Int/#Int  SlotR POST
 /slots CleanSlotR POST
+
+
+/carga CargaR GET

@@ -36,6 +36,8 @@ Fase
     turn Int
     valid Bool
     UniqueFase number turn
+    deriving Eq
+    deriving Show
 
 Slot
     courseId CourseId Maybe

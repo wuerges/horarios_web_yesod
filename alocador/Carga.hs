@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, OverloadedStrings #-}
 
 module Carga where
 
@@ -7,7 +7,7 @@ import qualified Data.Map as M
 
 import Import
 
-data Disc = Disc { _prof :: String, _nome :: String }
+data Disc = Disc { _prof :: Text, _nome :: Text }
     deriving (Ord, Eq, Show)
 
 data Hor = Hor { _dia :: Int, _hora :: Int }
@@ -15,6 +15,11 @@ data Hor = Hor { _dia :: Int, _hora :: Int }
 
 data Turno = Diurno | Noturno
     deriving (Ord, Eq, Show)
+
+numberTurno :: Int -> Turno
+numberTurno n | n == 1 = Diurno
+              | n == 2 = Noturno
+              | otherwise = error "Turno Invalido"
 
 data Quadro = Quadro [(Hor, Int, Disc)]
     deriving Show
