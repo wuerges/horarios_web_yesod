@@ -3,21 +3,25 @@ module Handler.Horarios where
 import Import
 import qualified Carga as C
 import qualified Algo as A
-
---import Database.Persist.Sql
-
---data CargaJ = CargaJ { __fases :: [(Int, Turno)]
---                    , __profs :: [(Disc, Int)]
---                    , __precolors :: [Precolor] }
---
--- toCarga
--- solve
+import qualified Data.Map as M
 
 
+mkMapQuadro :: Either ([C.Disc], C.Quadro) C.Quadro -> M.Map (Int, Int, Int) Text
+mkMapQuadro (Left _ ) = M.empty
+mkMapQuadro (Right (C.Quadro q)) = M.fromList ql
+  where ql = [((h, d, fn), dname) |
+               (C.Hor d h, fn, C.Disc pname dname) <- q]
 
+renderResult :: M.Map (Int, Int, Int) Text -> (Int, Int, Int) -> Text
+renderResult m k = case M.lookup k m of
+                     Just s -> s
+                     Nothing -> "             "
 
 getCargaR :: Handler Html
 getCargaR = do
+  diurno <- runDB $ selectList [FaseTurn ==. 1, FaseValid ==. True] [Asc FaseNumber]
+  noturno <- runDB $ selectList [FaseTurn ==. 2, FaseValid ==. True] [Asc FaseNumber]
+
   fases <- runDB $ selectList [FaseValid ==. True] []
   professors <- runDB $ selectList [] [Asc ProfessorName]
   courses <- runDB $ selectList [] [Asc CourseCode]
@@ -37,6 +41,7 @@ getCargaR = do
               (Professor pname, _, Course _ dname fn _) <- ps_cs]
       _c = C.CargaJ _fs (_ps ++ _ps) _pres
       _s = A.solve (C.toCarga _c)
+      _m = mkMapQuadro _s
   print ps_cs
   print fases
   print precolors
