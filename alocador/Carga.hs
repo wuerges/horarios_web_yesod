@@ -52,13 +52,19 @@ emptyCarga = Carga M.empty [] []
 
 dias :: [Int]
 dias = [1..5]
+
+horsTurno :: Turno -> [Hor]
 horsTurno Diurno  = [Hor d h | d <- dias, h <- [7, 10]]
 horsTurno Noturno = [Hor d h | d <- dias, h <- [19, 21]]
 
+
+horariosFases :: M.Map Int Turno -> [(Int, Hor)]
 horariosFases fm = concat [[(c, h) | h <- horsTurno t] | (c, t) <- M.toList fm]
 
+manhaSeguinte :: Hor -> Hor -> Bool
 manhaSeguinte (Hor d1 h1) (Hor d2 h2) = d2 == d1 + 1 && h1 == 21 && h2 == 7
 
+consecutivos :: Hor -> Hor -> Bool
 consecutivos (Hor d1 h1) (Hor d2 h2) = d1 == d2 && ((h1 == 7 && h2 == 10) || (h1 == 19 && h2 == 21))
 
 addProf :: Int -> Disc -> Carga -> Carga
