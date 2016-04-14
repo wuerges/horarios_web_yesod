@@ -24,7 +24,6 @@ $doctype 5
                 <td> 
                   <form action=@{SlotR (faseNumber f) d h} method=post>
                     ^{makeSlotForm (faseNumber f) d h} 
-                    <button  style="height:30px; width:80px" >
 
     <div style="float: left; width: 500px;">
       $forall Entity k f <- noturno
@@ -45,6 +44,5 @@ $doctype 5
                 <td>
                   <form action=@{SlotR (faseNumber f) d h} method=post>
                     ^{makeSlotForm (faseNumber f) d h} 
-                    <button  style="height:30px; width:80px" > 
 
 

@@ -1,0 +1,20 @@
+$(function () {
+  var selects = document.getElementsByTagName('select');
+  for (i = 0; i <= selects.length; ++i) {
+    s = selects[i];
+    if (s) {
+      s.onchange = function(elem) {
+        //console.log(elem.target.form);
+        elem.target.form.submit();
+        /*$.ajax({
+          type: "POST",
+          url: elem.target.form.action,
+          data: elem.target.form.serialize(),
+          success: function(d) { console.log("SUCCESS"); }
+        });*/
+      }
+    }
+  }
+});
+
+
