@@ -1,0 +1,44 @@
+$doctype 5
+<html>
+  <head>
+    <title> Carga Horária
+
+  <body>
+    <h1> Carga horária gerada pela interface
+    <div style="float: left; width: 600px;">
+      $forall Entity k f <- diurno
+        <h2> Fase #{faseNumber f} - Diurno
+        <table border="1" cellpadding="10">
+          <tr> 
+            <th> Horário
+            <th> Segunda
+            <th> Terça
+            <th> Quarta
+            <th> Quinta
+            <th> Sexta
+
+          $forall h <- diurnos
+            <tr>
+              <td> #{show h}
+              $forall d <- days
+                <td> 
+                  #{renderResult _m (h, d, faseNumber f)}
+
+    <div style="float: left; width: 500px;">
+      $forall Entity k f <- noturno
+        <h2> Fase #{faseNumber f} - Noturno
+        <table border="1" cellpadding="10">
+          <tr> 
+            <th> Horário
+            <th> Segunda
+            <th> Terça
+            <th> Quarta
+            <th> Quinta
+            <th> Sexta
+
+          $forall h <- noturnos
+            <tr>
+              <td> #{show h}
+              $forall d <- days
+                <td> 
+                  #{renderResult _m (h, d, faseNumber f)}
