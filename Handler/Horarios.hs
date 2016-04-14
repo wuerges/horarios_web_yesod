@@ -3,6 +3,11 @@ module Handler.Horarios where
 import Import
 --import Data.Map ((!))
 
+
+--hiddenFieldSettings :: FieldSettings String
+                       --fromString "Some MSG"  { fsAttrs = [("class", "hfield")] }
+
+
 slotAForm0 :: AForm Handler Slot
 slotAForm0  = Slot
   <$> aopt hiddenField "" Nothing
@@ -12,11 +17,18 @@ slotAForm0  = Slot
 
 slotAForm :: Slot -> AForm Handler Slot
 slotAForm (Slot cId day hour fase) = Slot
-  <$> aopt (selectField courses) "" (Just cId)
+  <$> aopt (selectField courses) fs (Just cId)
   <*> areq hiddenField "" (Just day)
   <*> areq hiddenField "" (Just hour)
   <*> areq hiddenField "" (Just fase)
  where
+   fs = FieldSettings
+          { fsLabel = "this is not used"
+          , fsTooltip = Nothing
+          , fsId = Nothing
+          , fsName = Nothing
+          , fsAttrs = [] -- [("style", "width: 80px; height: 30px;")]
+          }
    courses =
      optionsPersistKey ([CourseFase ==. fase] ||. [CourseFase ==. 0]) [Asc CourseCode] courseCode
 
@@ -27,7 +39,7 @@ makeSlotForm fn d h = do
                                          Just (Entity _ v) -> return v
                                          Nothing -> return $ Slot Nothing d h fn
 
-  (w, _) <- handlerToWidget $ generateFormPost $ renderDivs $ slotAForm $ slot
+  (w, _) <- handlerToWidget $ generateFormPost $ renderDivsNoLabels $ slotAForm $ slot
   w
 
 

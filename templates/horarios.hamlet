@@ -5,7 +5,7 @@ $doctype 5
 
   <body>
     <h1> Listagem de Horários por Fase
-    <div style="float: left; width: 500px;">
+    <div style="float: left; width: 600px;">
       $forall Entity k f <- diurno
         <h2> Fase #{faseNumber f} - Diurno
         <table border="1" cellpadding="10">
