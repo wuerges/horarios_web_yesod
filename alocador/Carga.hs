@@ -69,6 +69,12 @@ horariosFases fm = concat [[(c, h) | h <- horsTurno t] | (c, t) <- M.toList fm]
 manhaSeguinte :: Hor -> Hor -> Bool
 manhaSeguinte (Hor d1 h1) (Hor d2 h2) = d2 == d1 + 1 && h1 == 21 && h2 == 7
 
+mesmoDia :: Hor -> Hor -> Bool
+mesmoDia (Hor d1 h1) (Hor d2 h2) | d1 /= d2  = False
+                                 | otherwise = if h1 <= 12
+                                                  then h2 <= 12
+                                                  else h2 > 12
+
 consecutivos :: Hor -> Hor -> Bool
 consecutivos (Hor d1 h1) (Hor d2 h2) = d1 == d2 && ((h1 == 7 && h2 == 10) || (h1 == 19 && h2 == 21))
 

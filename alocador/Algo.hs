@@ -105,7 +105,7 @@ allEdges ns = [(e1, e2) | e1 <- ns, e2 <- ns]
 
 filterEdge :: (LNode (Int, Hor), LNode (Int, Hor)) -> Bool
 filterEdge ((_, (f1, h1)), (_, (f2, h2))) =
-        (h1 == h2) || manhaSeguinte h1 h2 || (f1 == f2 && consecutivos h1 h2)
+  (h1 == h2) || manhaSeguinte h1 h2 || (f1 == f2 && consecutivos h1 h2) || mesmoDia h1 h2
 
 makeQuadro :: PM -> G -> Quadro
 makeQuadro pm g = Quadro [(h n g, f n g, p) | (n, p) <- H.toList pm]
